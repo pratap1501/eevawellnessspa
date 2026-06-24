@@ -20,7 +20,7 @@ const Nav = () => (
     </div>
     <a 
       href="#booking"
-      className="hidden md:flex items-center gap-2 bg-gradient-to-r from-[#d4a3a6] to-[#f3cdd0] text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-[#d4a3a6]/40 hover:shadow-[#d4a3a6]/60"
+      className="hidden md:flex items-center gap-2 bg-gradient-to-r from-[#d4a3a6] to-[#f3cdd0] text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
     >
       Book Now
     </a>
@@ -61,7 +61,7 @@ const Hero = () => (
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             href="#booking"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#d4a3a6] to-[#e8a2a8] text-white px-10 py-5 rounded-full text-sm font-bold uppercase tracking-widest shadow-xl shadow-[#d4a3a6]/50"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#d4a3a6] to-[#e8a2a8] text-white px-10 py-5 rounded-full text-sm font-bold uppercase tracking-widest hover:shadow-xl transition-all"
           >
             Book Appointment
           </motion.a>
@@ -71,7 +71,7 @@ const Hero = () => (
             href={WhatsAppLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 glass-panel text-[#3b2b2c] px-10 py-5 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-white transition-colors duration-300 shadow-xl"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 glass-panel text-[#3b2b2c] px-10 py-5 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-white transition-all"
           >
             <MessageCircle className="w-5 h-5 text-[#25D366]" />
             WhatsApp Reservation
@@ -102,7 +102,7 @@ const About = () => (
           <h2 className="font-serif text-5xl md:text-6xl mb-8 text-[#3b2b2c] leading-tight">A Sanctuary of<br/>Holistic Healing</h2>
           <div className="h-px w-24 bg-[#d4a3a6] mb-8"></div>
           <p className="text-[#3b2b2c]/80 text-lg font-light leading-relaxed mb-6">
-            At Eeva Wellness SPA, we believe true wellness transcends the physical. Our ultra-modern sanctuary is deeply rooted in feminine elegance, blending ancient healing traditions with premium luxury to create a space where body, mind, and spirit find perfect harmony.
+            At Eeva Wellness SPA, we believe true wellness transcends the physical. Our ultra-modern sanctuary is deeply rooted in feminine elegance, blending ancient healing traditions with premium therapies.
           </p>
           <p className="text-[#3b2b2c]/80 text-lg font-light leading-relaxed mb-10">
             Step into an ambient atmosphere of soft glow lighting, the aroma of rare orchids, and our unparalleled commitment to your rejuvenation. This is your personal escape.
@@ -201,7 +201,7 @@ const Services = () => (
                 <p className="text-[10px] uppercase tracking-widest font-bold text-[#3b2b2c]/50 mb-1">Starting from</p>
                 <span className="font-serif font-medium text-2xl text-[#d4a3a6]">{massage.price.split(' / ')[0]}</span>
               </div>
-              <a href="#booking" className="flex items-center gap-2 bg-[#fff5f7] border border-[#d4a3a6]/50 text-[#d4a3a6] px-5 py-2.5 rounded-full text-[10px] uppercase tracking-widest font-bold group-hover:bg-[#d4a3a6] group-hover:text-white group-hover:border-transparent transition-all">
+              <a href="#booking" className="flex items-center gap-2 bg-[#fff5f7] border border-[#d4a3a6]/50 text-[#d4a3a6] px-5 py-2.5 rounded-full text-[10px] uppercase tracking-widest font-bold hover:bg-[#d4a3a6] hover:text-white transition-all">
                 Reserve <ChevronRight className="w-3 h-3" />
               </a>
             </div>
@@ -252,7 +252,7 @@ const TestimonialSection = () => (
             {TESTIMONIALS.map((t, i) => (
               <div key={i} className="glass-panel p-10 rounded-[2.5rem] relative neon-glow">
                   <div className="text-[#d4a3a6] opacity-30 mb-8 transform -translate-x-2">
-                    <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor"><path d="M14.017 21L16.41 14.594C16.894 13.25 17.5 12.394 18.232 12.023C18.964 11.653 20.089 11.468 21.607 11.468V4H13.625V11.238L11.536 21H14.017ZM4.875 21L7.268 14.594C7.752 13.25 8.357 12.394 9.09 12.023C9.82 11.653 10.946 11.468 12.464 11.468V4H4.482V11.238L2.393 21H4.875Z"/></svg>
+                    <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor"><path d="M14.017 21L16.41 14.594C16.894 13.25 17.5 12.394 18.232 12.023C18.964 11.653 20.089 11.468 21.607 [...]" /></svg>
                   </div>
                   <p className="text-[#3b2b2c]/80 font-light text-lg leading-relaxed mb-8 italic flex-grow">
                     "{t.review}"
@@ -282,16 +282,46 @@ const BookingSection = () => {
   });
 
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormSubmitted(true);
-    setTimeout(() => setFormSubmitted(false), 5000);
-    setFormData({ name: '', phone: '', service: '', date: '', time: '' });
+    setIsLoading(true);
+    setError('');
+
+    try {
+      // Validate form data
+      if (!formData.name || !formData.phone || !formData.service || !formData.date || !formData.time) {
+        setError('Please fill in all fields');
+        setIsLoading(false);
+        return;
+      }
+
+      // Send booking request via WhatsApp (since no backend is configured)
+      const message = `Booking Request:\nName: ${formData.name}\nPhone: ${formData.phone}\nService: ${formData.service}\nDate: ${formData.date}\nTime: ${formData.time}`;
+      const whatsappUrl = `https://wa.me/${WhatsAppNumber}?text=${encodeURIComponent(message)}`;
+      
+      // Show success message
+      setFormSubmitted(true);
+      setTimeout(() => {
+        setFormSubmitted(false);
+        // Optionally open WhatsApp
+        window.open(whatsappUrl, '_blank');
+      }, 3000);
+      
+      // Reset form
+      setFormData({ name: '', phone: '', service: '', date: '', time: '' });
+    } catch (err) {
+      setError('Failed to submit booking. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError('');
   };
 
   return (
@@ -347,21 +377,27 @@ const BookingSection = () => {
                 </motion.div>
             ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {error && (
+                    <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+                      {error}
+                    </div>
+                  )}
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                           <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#3b2b2c]/60 mb-2 pl-4">Full Name</label>
-                          <input type="text" name="name" value={formData.name} onChange={handleInputChange} required className="w-full bg-white/70 border border-white focus:border-[#d4a3a6] outline-none rounded-2xl py-4 px-6 text-[#3b2b2c] transition-all shadow-sm focus:shadow-md" placeholder="Your beautiful name" />
+                          <input type="text" name="name" value={formData.name} onChange={handleInputChange} required className="w-full bg-white/70 border border-white focus:border-[#d4a3a6] outline-none px-5 py-3 rounded-2xl text-[#3b2b2c] placeholder-[#3b2b2c]/40 transition-colors" placeholder="Your Name" />
                       </div>
                       <div>
                           <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#3b2b2c]/60 mb-2 pl-4">Phone Number</label>
-                          <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} required className="w-full bg-white/70 border border-white focus:border-[#d4a3a6] outline-none rounded-2xl py-4 px-6 text-[#3b2b2c] transition-all shadow-sm focus:shadow-md" placeholder="WhatsApp preferred" />
+                          <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} required className="w-full bg-white/70 border border-white focus:border-[#d4a3a6] outline-none px-5 py-3 rounded-2xl text-[#3b2b2c] placeholder-[#3b2b2c]/40 transition-colors" placeholder="+91 XXXXXXXXXX" />
                       </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
                       <div>
                           <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#3b2b2c]/60 mb-2 pl-4">Desire Service</label>
-                          <select name="service" value={formData.service} onChange={handleInputChange} required className="w-full bg-white/70 border border-white focus:border-[#d4a3a6] outline-none rounded-2xl py-4 px-6 text-[#3b2b2c] transition-all shadow-sm focus:shadow-md appearance-none">
+                          <select name="service" value={formData.service} onChange={handleInputChange} required className="w-full bg-white/70 border border-white focus:border-[#d4a3a6] outline-none px-5 py-3 rounded-2xl text-[#3b2b2c] transition-colors">
                               <option value="">-- Select Treatment --</option>
                               {MASSAGES.map(m => <option key={m.id} value={m.title}>{m.title}</option>)}
                           </select>
@@ -371,16 +407,16 @@ const BookingSection = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                           <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#3b2b2c]/60 mb-2 pl-4">Perfect Date</label>
-                          <input type="date" name="date" value={formData.date} onChange={handleInputChange} required className="w-full bg-white/70 border border-white focus:border-[#d4a3a6] outline-none rounded-2xl py-4 px-6 text-[#3b2b2c]/70 transition-all shadow-sm focus:shadow-md" />
+                          <input type="date" name="date" value={formData.date} onChange={handleInputChange} required className="w-full bg-white/70 border border-white focus:border-[#d4a3a6] outline-none px-5 py-3 rounded-2xl text-[#3b2b2c] transition-colors" />
                       </div>
                       <div>
                           <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#3b2b2c]/60 mb-2 pl-4">Perfect Time</label>
-                          <input type="time" name="time" value={formData.time} onChange={handleInputChange} required className="w-full bg-white/70 border border-white focus:border-[#d4a3a6] outline-none rounded-2xl py-4 px-6 text-[#3b2b2c]/70 transition-all shadow-sm focus:shadow-md" />
+                          <input type="time" name="time" value={formData.time} onChange={handleInputChange} required className="w-full bg-white/70 border border-white focus:border-[#d4a3a6] outline-none px-5 py-3 rounded-2xl text-[#3b2b2c] transition-colors" />
                       </div>
                   </div>
 
-                  <button type="submit" className="w-full mt-6 bg-gradient-to-r from-[#d4a3a6] to-[#e8a2a8] text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-[11px] hover:shadow-xl hover:shadow-[#d4a3a6]/40 transition-all hover:-translate-y-1">
-                      Confirm Reservation Securely
+                  <button type="submit" disabled={isLoading} className="w-full mt-6 bg-gradient-to-r from-[#d4a3a6] to-[#e8a2a8] text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-[11px] hover:shadow-xl disabled:opacity-50 transition-all">
+                      {isLoading ? 'Processing...' : 'Confirm Reservation Securely'}
                   </button>
                 </form>
             )}
@@ -456,7 +492,7 @@ const Footer = () => (
         </div>
       </div>
       
-      <div className="mt-24 pt-8 border-t border-[#d4a3a6]/20 text-center text-[10px] tracking-[0.2em] uppercase font-bold text-[#3b2b2c]/50 relative z-10 flex flex-col sm:flex-row justify-center items-center gap-4">
+      <div className="mt-24 pt-8 border-t border-[#d4a3a6]/20 text-center text-[10px] tracking-[0.2em] uppercase font-bold text-[#3b2b2c]/50 relative z-10 flex flex-col sm:flex-row justify-center gap-3">
         <span>&copy; {new Date().getFullYear()} Eeva Wellness SPA. Curated for Luxury.</span>
         <span className="hidden sm:inline">•</span>
         <a href="#" className="hover:text-[#d4a3a6] transition-colors">Privacy Policy</a>
