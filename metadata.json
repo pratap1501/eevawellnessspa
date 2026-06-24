@@ -1,0 +1,6 @@
+{
+  "name": "Eeva Wellness SPA",
+  "description": "Luxury spa homepage with separate massage sections, therapist details, and WhatsApp reservation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
